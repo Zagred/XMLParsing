@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Xml;
+using System.IO;
 
 
 namespace HtmlParser
@@ -19,6 +20,7 @@ namespace HtmlParser
 
             XmlDocument doc = new XmlDocument();
             doc.Load(@"C:\Users\paco\Desktop\Project\XMLParsing\XMLParsing\sitemapbrowse.ashx");
+            XDocument doc2 = XDocument.Load(@"C:\Users\paco\Desktop\Project\XMLParsing\XMLParsing\xd.ashx");
 
             XmlNodeList loc = doc.GetElementsByTagName("loc");
             XmlNodeList mod = doc.GetElementsByTagName("lastmod");
@@ -26,7 +28,6 @@ namespace HtmlParser
             XmlNodeList prior = doc.GetElementsByTagName("priority");
 
             string number = null;
-            int counter = 0;
             int modNumber = 0;
             List<List<string>> FileContent = new List<List<string>>();
             for (int i = 0; i < doc.DocumentElement.ChildNodes.Count; i++)
@@ -34,52 +35,22 @@ namespace HtmlParser
                 number += mod[i].InnerText[14];
                 number+= mod[i].InnerText[15];
                 modNumber = int.Parse(number);
-                /*for (int j = 0; j < mod[i].InnerText.Length; j++)
-                {
-
-                     switch (mod[i].InnerText[j])
-                    {
-                        case ':':
-                            counter += 1;
-                            break;
-                        default:
-                            if (counter == 1)
-                            {
-                                number += mod[i].InnerText[j];
-                            }
-                            else if (counter > 1)
-                            {
-                                modNumber = int.Parse(number);
-                            }
-                            break;
-                    }
-                }*/
                 number = null;
-                counter = 0;
                 if (modNumber > 30)
                 {
-                    FileContent.Add(new List<string> { loc[i].InnerText, mod[i].InnerText, freq[i].InnerText, prior[i].InnerText });
+                    
+
+                    XElement root = new XElement("url");
+
+                    root.Add(new XElement("loc",loc[i].InnerText));
+                    root.Add(new XElement("lastmod",mod[i].InnerText));
+                    root.Add(new XElement("changefreq",freq[i].InnerText));
+                    root.Add(new XElement("priority",prior[i].InnerText));
+                    doc2.Element("urlset").Add(root);
+                    doc2.Save(@"C:\Users\paco\Desktop\Project\XMLParsing\XMLParsing\xd.ashx");
 
                 }
             }
-            /*XmlDocument doc2 = new XmlDocument();
-            doc2.Load(@"C:\Users\paco\Desktop\Project\XMLParsing\XMLParsing\xd.ashx");
-            XElement root = new XElement("url");
-            root.Add(new XAttribute("loc", loc[i].InnerText));
-            root.Add(new XAttribute("lastmod", mod[i].InnerText));
-            root.Add(new XAttribute("changefreq", freq[i].InnerText));
-            root.Add(new XAttribute("priority", prior[i].InnerText));
-            doc2.Save(@"C:\Users\ppandev\Desktop\XMLParser-master\xd.ashx");*/
-            foreach (List<string> line in FileContent)
-            {
-                foreach (string token in line)
-                {
-                    Console.Write($"{token}|");
-                }
-                Console.WriteLine();
-            }
-
-            
         }
     }
 }
