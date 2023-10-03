@@ -15,26 +15,27 @@ namespace HtmlParser
     {
         static void Main(string[] args)
         {
-            string xml = @"C:\Users\paco\Desktop\Project\XMLParsing\XMLParsing\sitemapbrowse.ashx";
-
+            string xml = @"https://usdirectory.com/sitemapbrowse.ashx";
             HtmlWeb web = new HtmlWeb();
-
             var doc = web.Load(xml);
             var link = doc.DocumentNode.SelectNodes(@"/urlset/url");
 
+            var resuleSavePath = "result.xml";
             var result = new HtmlDocument();
+
+            DateTime dt;
             if (link != null)
             {
                 foreach (var node in link)
                 {
                     var lastmodNode = node.SelectSingleNode("./lastmod");
-                    DateTime dt = DateTime.Parse(lastmodNode.InnerText);
+                    dt = DateTime.Parse(lastmodNode.InnerText);
                     if (dt > DateTime.Now.AddDays(-30))
                     {
                         result.DocumentNode.AppendChild(node);
                     }
                 }
-                result.Save("result.xml");
+                result.Save(resuleSavePath);
             }
         }
     }
