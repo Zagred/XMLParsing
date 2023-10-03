@@ -15,9 +15,10 @@ namespace HtmlParser
     {
         static void Main(string[] args)
         {
-            string xml = @"https://usdirectory.com/sitemapbrowse.ashx";
-            HtmlWeb web = new HtmlWeb();
-            var doc = web.Load(xml);
+            string xmlUrl = @"https://usdirectory.com/sitemapbrowse.ashx";
+            string sitemap = new WebClient().DownloadString(xmlUrl);
+            var doc=new HtmlDocument();
+            doc.LoadHtml(sitemap);
             var link = doc.DocumentNode.SelectNodes(@"/urlset/url");
 
             var resuleSavePath = "result.xml";
