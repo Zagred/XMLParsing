@@ -16,15 +16,16 @@ namespace HtmlParser
         static void Main(string[] args)
         {
             string xmlUrl = @"https://usdirectory.com/sitemapbrowse.ashx";
+            var resuleSavePath = "result.xml";
+
             string sitemap = new WebClient().DownloadString(xmlUrl);
             var doc=new HtmlDocument();
             doc.LoadHtml(sitemap);
             var link = doc.DocumentNode.SelectNodes(@"/urlset/url");
 
-            var resuleSavePath = "result.xml";
-            var result = new HtmlDocument();
-
             DateTime dt;
+            var result = new HtmlDocument();
+            
             if (link != null)
             {
                 foreach (var node in link)
